@@ -6,32 +6,35 @@ var CreateClass = require('create-react-class');
 
 var Home = require('./components/home-page');
 var About = require('./components/about/about-page');
+var Header = require('./components/common/header-page');
 
+(function(win) {
+	var App = CreateClass({
+		render: function() {
+			var Child;
 
-var App = CreateClass({
-	render: function() {
-		var Child;
+			switch(this.props.route) {
+				case 'about': 
+					Child = About;
+					break;
+				default: 
+					Child = Home;	
+			}
 
-		switch(this.props.route) {
-			case 'about': 
-				Child = About;
-				break;
-			default: 
-				Child = Home;	
+			return (
+				<div>
+					<Header />
+					<Child/>
+				</div>
+			);
 		}
+	});
 
-		return (
-			<div>
-				<Child/>
-			</div>
-		);
+	function render() {
+		var route = win.location.hash.substr(1);
+		ReactDOM.render(<App route={route }/>, document.getElementById('app'));
 	}
-});
 
-function render() {
-	var route = window.location.hash.substr(1);
-	ReactDOM.render(<App route={route }/>, document.getElementById('app'));
-}
-
-window.addEventListener('hashchange', render);
-render();
+	win.addEventListener('hashchange', render);
+	render();
+})(window);
